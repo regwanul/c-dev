@@ -19,15 +19,23 @@ void listPrepend(node_t **head, int data){
 }
 
 
-void listAppend(node_t *head, int data) {
-    node_t *current = head;
-    while(current->next != NULL) {
-        current = current->next;
-    }
+void listAppend(node_t **head, int data) {
+    node_t *current = *head;
 
-    current->next = malloc(sizeof(node_t));
-    current->next->data = data;
-    current->next->next = NULL;
+    if(current == NULL) {
+        current = malloc(sizeof(node_t));
+        current->data = data;
+        current->next = NULL;
+        *head = current;
+    } else {
+        while(current->next != NULL) {
+            current = current->next;
+        }
+
+        current->next = malloc(sizeof(node_t));
+        current->next->data = data;
+        current->next->next = NULL;
+    }
 }
 
 
@@ -108,17 +116,14 @@ void listPrint(node_t *head) {
 
 int main() {
     node_t *head = NULL;
-    head = malloc(sizeof(node_t));
-    assert(head != NULL);
-    head->data = 2;
     
     int data = -1;
 
-//    listAppend(head, 5); 
-//    listAppend(head, 10); 
-//    listAppend(head, 15); 
-//    listAppend(head, 20); 
-//    listAppend(head, 25); 
+    listAppend(&head, 5); 
+    listAppend(&head, 10); 
+    listAppend(&head, 15); 
+    listAppend(&head, 20); 
+    listAppend(&head, 25); 
 
     listPrepend(&head, 5);
     listPrepend(&head, 10);
