@@ -6,149 +6,272 @@
 
 typedef struct node {
     int data;
-    struct node *next;
-} node_t;
+    struct node* next;
+} Node;
 
 
-void listPrepend(node_t **head, int data){
-    node_t *newNode = malloc(sizeof(node_t));
-
+/* 
+ * Add node to head of list 
+ */
+void listPrepend(Node** head, int data) {
+    // create new node
+    Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->data = data;
+    
+    // point new node's next to the old head 
     newNode->next = *head;
+
+    // head is now the new node
     *head = newNode;
 }
 
 
-void listAppend(node_t **head, int data) {
-    node_t *current = *head;
+/*
+ * Add node to end of list
+ */
+void listAppend(Node** head, int data) {
+    Node* current = *head;
 
-    if(current == NULL) {
-        current = malloc(sizeof(node_t));
+    if(current == NULL) { 
+        // list is empty, create new
+        current = (Node*)malloc(sizeof(Node));
         current->data = data;
-        current->next = NULL;
+        
+        // point to the old head
+        current->next = *head;
+
+        // point to the new node
         *head = current;
     } else {
+        // go to the end of the list
         while(current->next != NULL) {
             current = current->next;
         }
-
-        current->next = malloc(sizeof(node_t));
+        
+        // create new node
+        current->next = (Node*)malloc(sizeof(Node));
         current->next->data = data;
+
         current->next->next = NULL;
     }
 }
 
 
-int listRemoveFirst(node_t **head) {
-    assert(*head != NULL);
+/*
+ * Find a node with given specific key
+ */
+Node* listSearch(Node* head, int key) {
+    Node* current = head;
 
-    int dataReturn = 0;
-    node_t *nextNode = NULL;
+    // traverse through list until key is found
+    while(current != NULL) {
+        if(current->data == key) {
+            return current;
+        }
 
-    nextNode = (*head)->next;
-    dataReturn = (*head)->data;
-    free(*head);
-    *head = nextNode;
+        current = current->next;
+    }
 
-    return dataReturn;
+    return NULL;
+
 }
 
 
-int listRemoveLast(node_t *head) {
-    int dataReturn = 0;
+/*
+ * Delete the first node in a list
+ */
+int listDeleteFirst(Node** head) {
+    assert(*head != NULL);
 
-    // if there is only 1 item in the list, remove it
-    if(head->next == NULL) {
-        dataReturn = head->data;
-        free(head);
-        return dataReturn;
+    // point to next node
+    Node* node = (*head)->next;
+
+    int data = (*head)->data;
+
+    // free head pointer
+    free(*head);
+
+    // make the next node head
+    *head = node;
+
+    return data;
+}
+
+
+/*
+ * Delete the last node in a list
+ */
+int listDeleteLast(Node** head) {
+    assert(*head != NULL);
+    int data = -1;
+
+    // if only 1 node in the list
+    if((*head)->next == NULL) {
+        data = (*head)->data;
+        free(*head);
+        return data;
     }
-    
-    // get to the second last node in the list
-    node_t *current = head;
+
+    // traverse to the end of the list
+    Node* current = *head;
     while(current->next->next != NULL) {
         current = current->next;
     }
 
-    // now current points to second last node, so remove current->next
-    dataReturn = current->next->data;
+    data = current->next->data;
     free(current->next);
-    current->next=NULL;
-    return dataReturn;
+    current->next = NULL;
+
+    return data;
 }
 
 
-int listRemoveByData(node_t **head, int data) {
+/*
+ * Delete node given a specific key
+ */
+int listDeleteNode(Node** head, int key) {
     assert(*head != NULL);
 
-    node_t *previous, *current;    
-    previous = current = *head;
+    int data = -1;
+    Node* current = *head;
+    Node* previous = NULL;
 
-    while(current->data != data) {
-        if(current->next == NULL) {
-            return -1;
-        } else {
-            previous = current;
-            current = current->next;
+    // traverse until end of list
+    while(current->next != NULL) {
+
+        // if key is found
+        if(current->data == key) {
+            data = key;
+
+            // make previous node point to next node after current
+            previous->next = current->next;
+            free(current);
+            return data;
         }
 
-    }
-
-    if(current == *head) {
-        return listRemoveFirst(head);
-    } else {
-        previous->next = current->next;
-        free(current);
+        previous = current;
+        current = current->next;
     }
 
     return data;
 }
 
 
-void listPrint(node_t *head) {
-    node_t *current = head;
+/*
+ * Reverse the list
+ */
+void listReverse(Node** head) {
+    assert(*head != NULL);
+
+    Node* current = *head;
+    Node* previous = NULL;
+    Node* next;
 
     while(current != NULL) {
-        printf("%d ", current->data);
+
+        // save next as the current node's next node
+        next = current->next;
+
+        // make current's next node point to previous node
+        current->next = previous;
+
+        // previous is the new current
+        previous = current;
+
+        // next node is the new current
+        current = next;
+    }
+
+    *head = previous;
+}
+
+
+/*
+ * Swap the min and max nodes (first and last?)
+ */
+void listSwapMinMax(Node** head) {
+    assert(*head != NULL);
+
+    // save the head node
+    Node* tempNode = *head;
+
+    Node* current = *head;
+    Node* previous = NULL;
+
+    // traverse to the last node
+    while(current->next != NULL) {
+        previous = current;
         current = current->next;
     }
+
+    // make the end node the new head node
+    current->next = (*head)->next;
+    *head = current;
+
+    // make the saved head node, the new end node
+    previous->next = tempNode;
+    tempNode->next = NULL;
+}
+
+
+/* 
+ * Prints the list
+ */
+void listPrint(Node* head) {
+   Node* current = head;
+
+    while(current != NULL) {
+        printf("%d->", current->data);
+        current = current->next;
+    }
+
     printf("\n");
 }
 
-int main() {
-    node_t *head = NULL;
-    
+
+
+void main() {
+    Node* list1 = NULL;
     int data = -1;
 
-    listAppend(&head, 5); 
-    listAppend(&head, 10); 
-    listAppend(&head, 15); 
-    listAppend(&head, 20); 
-    listAppend(&head, 25); 
+    listPrepend(&list1, 5);
+    listPrepend(&list1, 10);
+    listPrepend(&list1, 15);
+    listPrepend(&list1, 20);
+    listPrepend(&list1, 25);
 
-    listPrepend(&head, 5);
-    listPrepend(&head, 10);
-    listPrepend(&head, 15);
-    listPrepend(&head, 20);
-    listPrepend(&head, 25);
+    listPrint(list1);
 
-    listPrint(head);
+    printf("%d\n", listSearch(list1, 5)->data);
 
-    data = listRemoveFirst(&head);
+    data = listDeleteFirst(&list1);
     printf("Removed first node = %d\n", data);
-    listPrint(head);
+    listPrint(list1);
 
-    data = listRemoveLast(head);
+    data = listDeleteLast(&list1);
     printf("Removed last node = %d\n", data);
-    listPrint(head);
+    listPrint(list1);
 
-    int num = 7;
-    data = listRemoveByData(&head, num);
-    if(data != -1) {
-        printf("Remove node with data = %d\n", num);
-    } else {
-        printf("Remove node with data = %d was UNSUCCESSFUL\n", num);
-    }
-    listPrint(head);
+    data = listDeleteNode(&list1, 15);
+    printf("Removed node with key = 15: %d\n", data);
+    listPrint(list1);
+
+
+    Node* list2 = NULL;
+    listPrepend(&list2, 100);
+    listPrepend(&list2, 200);
+    listPrepend(&list2, 300);
+    listPrepend(&list2, 400);
+    listPrepend(&list2, 500);
+    
+    printf("List 2:\n");
+    listPrint(list2);
+    listReverse(&list2);
+    printf("Reversed List 2:\n");
+    listPrint(list2);
+
+    printf("Swapping min and max in List 2:\n");
+    listSwapMinMax(&list2);
+    listPrint(list2);
 }
 
