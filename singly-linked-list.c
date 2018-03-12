@@ -132,28 +132,34 @@ int listDeleteLast(Node** head) {
 int listDeleteNode(Node** head, int key) {
     assert(*head != NULL);
 
-    int data = -1;
     Node* current = *head;
     Node* previous = NULL;
+    Node* tempNode;
 
-    // traverse until end of list
-    while(current->next != NULL) {
+    // traverse through list
+    while(current->data != key) {
 
-        // if key is found
-        if(current->data == key) {
-            data = key;
-
-            // make previous node point to next node after current
-            previous->next = current->next;
-            free(current);
-            return data;
+        // last node, return
+        if(current->next == NULL) {
+            return -1;
+        } else {
+            previous = current;
+            current = current->next;
         }
-
-        previous = current;
-        current = current->next;
     }
 
-    return data;
+    // matching key found
+    if(current == *head) {
+        // point head to next node
+        tempNode = (*head)->next;
+        free(*head);
+        *head = tempNode;
+    } else {
+        previous->next = current->next;
+        free(current);
+    }
+
+    return key;
 }
 
 
@@ -252,8 +258,8 @@ void main() {
     printf("Removed last node = %d\n", data);
     listPrint(list1);
 
-    data = listDeleteNode(&list1, 15);
-    printf("Removed node with key = 15: %d\n", data);
+    data = listDeleteNode(&list1, 10);
+    printf("Removed node with key = 10: %d\n", data);
     listPrint(list1);
 
 
@@ -273,5 +279,10 @@ void main() {
     printf("Swapping min and max in List 2:\n");
     listSwapMinMax(&list2);
     listPrint(list2);
+
+    data = listDeleteNode(&list2, 300);
+    printf("Removed node with key = 300: %d\n", data);
+    listPrint(list2);
+
 }
 
