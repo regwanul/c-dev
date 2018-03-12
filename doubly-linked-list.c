@@ -103,6 +103,9 @@ int listDeleteFirst(Node** head, Node** tail) {
 }
 
 
+/*
+ * Delete last node in list
+ */
 int listDeleteLast(Node** head, Node** tail) {
     assert(*tail != NULL);
     Node* tempNode = (*tail)->prev;
@@ -167,8 +170,36 @@ int listDeleteNode(Node** head, Node** tail, int key) {
 }
 
 
-// reverse
+/*
+ * Reverse the list
+ */
+void listReverse(Node** head, Node** tail) {
+    Node* current = *head;
+    Node* previous = NULL;
+    Node* next;
 
+    // traverse through list
+    while(current != NULL) {
+        // save current's next node
+        next = current->next;
+
+        // swap current's prev and next pointers
+        current->next = previous;
+        current->prev = next;
+
+        // go to next node
+        previous = current;
+        current = next;
+    }
+
+    // save head and tail pointers
+    Node* firstNode = *head;
+    Node* lastNode = *tail;
+
+    // swap head and tail pointers
+    *head = lastNode;
+    *tail = firstNode;
+}
 
 // swap min max
 
@@ -210,6 +241,10 @@ void main() {
     printf("Removed node with key = 20: %d\n", data);
     listPrintForward(list1Head);
 
+    printf("Reversed List 1:\n");
+    listReverse(&list1Head, &list1Tail);
+    listPrintForward(list1Head);
+
     Node* list2Head = NULL;
     Node* list2Tail = NULL;
 
@@ -229,5 +264,7 @@ void main() {
     printf("Removed node with key = 300: %d\n", data);
     listPrintBackward(list2Tail);
 
-
+    printf("Reversed List 2:\n");
+    listReverse(&list2Head, &list2Tail);
+    listPrintBackward(list2Tail);
 }
