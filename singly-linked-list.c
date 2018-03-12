@@ -143,6 +143,7 @@ int listDeleteNode(Node** head, int key) {
         if(current->next == NULL) {
             return -1;
         } else {
+            // go to next node
             previous = current;
             current = current->next;
         }
@@ -155,6 +156,7 @@ int listDeleteNode(Node** head, int key) {
         free(*head);
         *head = tempNode;
     } else {
+        // remove current node
         previous->next = current->next;
         free(current);
     }
