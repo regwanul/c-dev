@@ -286,5 +286,12 @@ void main() {
     printf("Removed node with key = 300: %d\n", data);
     listPrint(list2);
 
+    Node* list3 = NULL;
+    listPrepend(&list3, 11);
+    listPrepend(&list3, 22);
+    listPrepend(&list3, 33);
+    listPrint(list3);
+    listSwapMinMax(&list3);
+    listPrint(list3);
 }
 

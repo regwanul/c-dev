@@ -201,7 +201,13 @@ void listReverse(Node** head, Node** tail) {
     *tail = firstNode;
 }
 
-// swap min max
+
+/*
+ * Swap first and last node in list
+ */
+void listSwapMinMax(Node** head, Node** tail) {
+
+}
 
 
 /*
@@ -268,3 +274,4 @@ void main() {
     listReverse(&list2Head, &list2Tail);
     listPrintBackward(list2Tail);
 }
+
