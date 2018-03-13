@@ -45,6 +45,29 @@ void reverseStr(char* str) {
 
 
 /*
+ * Check if 2 strings are anagrams of each other
+ */
+int isAnagram(char* str1, char* str2) {
+    int countArr[26] = {0};
+    int countNum = 0;
+
+    for(char* s = str1; *s != '\0'; s++) {
+        countArr[*s - 'a']++;
+    }
+
+    for(char* s = str2; *s != '\0'; s++) {
+        countArr[*s - 'a']--;
+    }
+
+    for(int i = 0; i < sizeof(countArr)/sizeof(countArr[0]); i++) {
+        countNum += abs(countArr[i]);
+    }
+
+    return (countNum == 0) ? 1 : 0;
+}
+
+
+/*
  * Given array of consecutive ints, finds missing number
  */
 int consecutiveInts(int nums[], int size) {
@@ -124,5 +147,12 @@ int main() {
     for(int i = 0; i < sizeof(arrInts)/sizeof(arrInts[0]); i++) {
         printf("%d ", arrInts[i]);
     }
+    printf("\n");
+
+    char anagram1[] = "abcdefg";
+    char anagram2[] = "defbcgahi";
+    int anagramResult = isAnagram(anagram1, anagram2);
+    printf("Is anagram?: %d\n", anagramResult);
+
 
 }
